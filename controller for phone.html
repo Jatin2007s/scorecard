@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cricket Admin Controller</title>
+  <style>
+    body { font-family: sans-serif; background: #0f172a; color: #fff; padding: 15px; max-width: 500px; margin: auto; }
+    h3 { border-bottom: 2px solid #e11d48; padding-bottom: 5px; color: #f43f5e; margin-top: 15px; }
+    .row { display: flex; gap: 8px; margin-bottom: 8px; }
+    input, select { flex: 1; padding: 8px; background: #1e293b; border: 1px solid #334155; color: #fff; border-radius: 4px; }
+    button { width: 100%; padding: 12px; background: #e11d48; border: none; color: white; font-weight: bold; border-radius: 6px; font-size: 16px; margin-top: 15px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h2>Match Controller</h2>
+
+  <h3>Teams & Score</h3>
+  <div class="row">
+    <input id="teamA" placeholder="Team A" value="Batting Team">
+    <input id="teamB" placeholder="Team B" value="Bowling Team">
+  </div>
+  <div class="row">
+    <input id="runs" type="number" placeholder="Runs" value="0">
+    <input id="wickets" type="number" placeholder="Wickets" value="0">
+    <input id="overs" placeholder="Overs (e.g. 2.4)" value="0.0">
+  </div>
+
+  <h3>Striker & Non-Striker</h3>
+  <div class="row">
+    <input id="batsman1" placeholder="Batter 1 Name" value="Striker Name">
+    <input id="b1Runs" type="number" placeholder="Runs" value="0">
+    <input id="b1Balls" type="number" placeholder="Balls" value="0">
+  </div>
+  <div class="row">
+    <input id="batsman2" placeholder="Batter 2 Name" value="Non-Striker Name">
+    <input id="b2Runs" type="number" placeholder="Runs" value="0">
+    <input id="b2Balls" type="number" placeholder="Balls" value="0">
+  </div>
+  <div class="row">
+    <select id="striker">
+      <option value="1">Batter 1 on Strike</option>
+      <option value="2">Batter 2 on Strike</option>
+    </select>
+  </div>
+
+  <h3>Bowler Stats</h3>
+  <div class="row">
+    <input id="bowler" placeholder="Bowler Name" value="Bowler Name">
+  </div>
+  <div class="row">
+    <input id="bowlerWickets" type="number" placeholder="Wkts" value="0">
+    <input id="bowlerRuns" type="number" placeholder="Runs" value="0">
+    <input id="bowlerOvers" placeholder="Overs" value="0.0">
+  </div>
+
+  <button onclick="publishUpdate()">Push Update To Stream</button>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4lgI_xfQdhDpKfEPHrrOF0CfBJhzymIU",
+      authDomain: "double-wicket.firebaseapp.com",
+      databaseURL: "https://double-wicket-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "double-wicket",
+      storageBucket: "double-wicket.firebasestorage.app",
+      messagingSenderId: "567904727215",
+      appId: "1:567904727215:web:e6dfa688a0fcbd820b645a",
+      measurementId: "G-CLL417NKB3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function publishUpdate() {
+      db.ref('scorecard').set({
+        teamA: document.getElementById('teamA').value,
+        teamB: document.getElementById('teamB').value,
+        runs: parseInt(document.getElementById('runs').value) || 0,
+        wickets: parseInt(document.getElementById('wickets').value) || 0,
+        overs: document.getElementById('overs').value,
+        batsman1: document.getElementById('batsman1').value,
+        b1Runs: parseInt(document.getElementById('b1Runs').value) || 0,
+        b1Balls: parseInt(document.getElementById('b1Balls').value) || 0,
+        batsman2: document.getElementById('batsman2').value,
+        b2Runs: parseInt(document.getElementById('b2Runs').value) || 0,
+        b2Balls: parseInt(document.getElementById('b2Balls').value) || 0,
+        striker: parseInt(document.getElementById('striker').value),
+        bowler: document.getElementById('bowler').value,
+        bowlerWickets: parseInt(document.getElementById('bowlerWickets').value) || 0,
+        bowlerRuns: parseInt(document.getElementById('bowlerRuns').value) || 0,
+        bowlerOvers: document.getElementById('bowlerOvers').value
+      }).then(() => alert('Scorecard updated on stream!'));
+    }
+  </script>
+</body>
+</html>

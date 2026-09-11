@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cricket Overlay</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+      background: transparent;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+    }
+    .scorecard {
+      background: rgba(15, 23, 42, 0.9);
+      border-left: 5px solid #e11d48;
+      border-radius: 8px;
+      padding: 12px 18px;
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      min-width: 320px;
+    }
+    .teams { font-size: 14px; text-transform: uppercase; color: #94a3b8; font-weight: bold; letter-spacing: 1px; }
+    .main-score { font-size: 28px; font-weight: 800; color: #f8fafc; margin: 4px 0; }
+    .highlight { color: #f43f5e; }
+    .player-info { display: flex; justify-content: space-between; font-size: 14px; margin-top: 6px; border-top: 1px solid #334155; padding-top: 6px; color: #cbd5e1; }
+    .striker { color: #38bdf8; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="scorecard">
+    <div class="teams"><span id="teamA">TEAM A</span> vs <span id="teamB">TEAM B</span></div>
+    <div class="main-score">
+      <span id="runs">0</span>/<span id="wickets">0</span> 
+      <span style="font-size: 18px; color: #94a3b8;">(<span id="overs">0.0</span>)</span>
+    </div>
+    <div class="player-info">
+      <div>🏏 <span id="batsman1" class="striker">Batsman 1 *</span>: <span id="b1Runs">0</span>(<span id="b1Balls">0</span>)</div>
+      <div><span id="batsman2">Batsman 2</span>: <span id="b2Runs">0</span>(<span id="b2Balls">0</span>)</div>
+    </div>
+    <div class="player-info">
+      <div>⚾ Bowler: <span id="bowler" style="color: #facc15;">Bowler Name</span></div>
+      <div><span id="bowlerWickets">0</span>-<span id="bowlerRuns">0</span> (<span id="bowlerOvers">0.0</span>)</div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4lgI_xfQdhDpKfEPHrrOF0CfBJhzymIU",
+      authDomain: "double-wicket.firebaseapp.com",
+      databaseURL: "https://double-wicket-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "double-wicket",
+      storageBucket: "double-wicket.firebasestorage.app",
+      messagingSenderId: "567904727215",
+      appId: "1:567904727215:web:e6dfa688a0fcbd820b645a",
+      measurementId: "G-CLL417NKB3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    db.ref('scorecard').on('value', (snapshot) => {
+      const d = snapshot.val();
+      if (d) {
+        document.getElementById('teamA').innerText = d.teamA || 'TEAM A';
+        document.getElementById('teamB').innerText = d.teamB || 'TEAM B';
+        document.getElementById('runs').innerText = d.runs ?? 0;
+        document.getElementById('wickets').innerText = d.wickets ?? 0;
+        document.getElementById('overs').innerText = d.overs ?? '0.0';
+        
+        document.getElementById('batsman1').innerText = (d.batsman1 || 'Batsman 1') + (d.striker === 1 ? ' *' : '');
+        document.getElementById('b1Runs').innerText = d.b1Runs ?? 0;
+        document.getElementById('b1Balls').innerText = d.b1Balls ?? 0;
+        
+        document.getElementById('batsman2').innerText = (d.batsman2 || 'Batsman 2') + (d.striker === 2 ? ' *' : '');
+        document.getElementById('b2Runs').innerText = d.b2Runs ?? 0;
+        document.getElementById('b2Balls').innerText = d.b2Balls ?? 0;
+        
+        document.getElementById('bowler').innerText = d.bowler || 'Bowler';
+        document.getElementById('bowlerWickets').innerText = d.bowlerWickets ?? 0;
+        document.getElementById('bowlerRuns').innerText = d.bowlerRuns ?? 0;
+        document.getElementById('bowlerOvers').innerText = d.bowlerOvers ?? '0.0';
+      }
+    });
+  </script>
+</body>
+</html>
